@@ -228,18 +228,9 @@ bool CollectionView::RestoreLevelFocus(const QModelIndex &parent) {
 void CollectionView::ReloadSettings() {
 
   Settings settings;
-
   settings.beginGroup(CollectionSettingsPage::kSettingsGroup);
   SetAutoOpen(settings.value("auto_open", false).toBool());
-
-  if (app_) {
-    app_->collection_model()->set_pretty_covers(settings.value("pretty_covers", true).toBool());
-    app_->collection_model()->set_show_dividers(settings.value("show_dividers", true).toBool());
-    app_->collection_model()->set_sort_skips_articles(settings.value("sort_skips_articles", true).toBool());
-  }
-
   delete_files_ = settings.value("delete_files", false).toBool();
-
   settings.endGroup();
 
 }

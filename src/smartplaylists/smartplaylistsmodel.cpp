@@ -51,11 +51,7 @@ const int SmartPlaylistsModel::kSmartPlaylistsVersion = 1;
 SmartPlaylistsModel::SmartPlaylistsModel(SharedPtr<CollectionBackend> collection_backend, QObject *parent)
     : SimpleTreeModel<SmartPlaylistsItem>(new SmartPlaylistsItem(this), parent),
       collection_backend_(collection_backend),
-      icon_(IconLoader::Load(QStringLiteral("view-media-playlist"))) {
-
-  root_->lazy_loaded = true;
-
-}
+      icon_(IconLoader::Load(QStringLiteral("view-media-playlist"))) {}
 
 SmartPlaylistsModel::~SmartPlaylistsModel() { delete root_; }
 
@@ -164,7 +160,6 @@ void SmartPlaylistsModel::ItemFromSmartPlaylist(const Settings &s, const bool no
   item->sort_text = item->display_text;
   item->smart_playlist_type = PlaylistGenerator::Type(s.value("type").toInt());
   item->smart_playlist_data = s.value("data").toByteArray();
-  item->lazy_loaded = true;
 
   if (notify) item->InsertNotify(root_);
 

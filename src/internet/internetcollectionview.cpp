@@ -89,10 +89,6 @@ void InternetCollectionView::Init(Application *app, SharedPtr<CollectionBackend>
   collection_model_ = collection_model;
   favorite_ = favorite;
 
-  collection_model_->set_pretty_covers(true);
-  collection_model_->set_show_dividers(true);
-  collection_model_->set_sort_skips_articles(true);
-
   ReloadSettings();
 
 }
@@ -105,6 +101,7 @@ void InternetCollectionView::SetFilter(CollectionFilterWidget *filter) {
 
 void InternetCollectionView::ReloadSettings() {
 
+  if (collection_model_) collection_model_->ReloadSettings();
   if (filter_) filter_->ReloadSettings();
 
 }

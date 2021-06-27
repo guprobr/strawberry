@@ -91,12 +91,14 @@ set(SOURCES
   collection/collectiondirectorymodel.cpp
   collection/collectionfilteroptions.cpp
   collection/collectionfilterwidget.cpp
+  collection/collectionfilter.cpp
   collection/collectionplaylistitem.cpp
   collection/collectionquery.cpp
   collection/collectionqueryoptions.cpp
   collection/savedgroupingmanager.cpp
   collection/groupbydialog.cpp
   collection/collectiontask.cpp
+  collection/collectionmodelupdate.cpp
 
   playlist/playlist.cpp
   playlist/playlistbackend.cpp
@@ -347,6 +349,7 @@ set(HEADERS
   collection/collectionviewcontainer.h
   collection/collectiondirectorymodel.h
   collection/collectionfilterwidget.h
+  collection/collectionfilter.h
   collection/savedgroupingmanager.h
   collection/groupbydialog.h
 
