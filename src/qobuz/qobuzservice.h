@@ -105,9 +105,9 @@ class QobuzService : public InternetService {
   CollectionModel *albums_collection_model() override { return albums_collection_model_; }
   CollectionModel *songs_collection_model() override { return songs_collection_model_; }
 
-  CollectionFilter *artists_collection_filter_model() override { return artists_collection_filter_model_; }
-  CollectionFilter *albums_collection_filter_model() override { return albums_collection_filter_model_; }
-  CollectionFilter *songs_collection_filter_model() override { return songs_collection_filter_model_; }
+  CollectionFilter *artists_collection_filter_model() override { return artists_collection_model_->filter(); }
+  CollectionFilter *albums_collection_filter_model() override { return albums_collection_model_->filter(); }
+  CollectionFilter *songs_collection_filter_model() override { return songs_collection_model_->filter(); }
 
  public slots:
   void ShowConfig() override;
@@ -159,10 +159,6 @@ class QobuzService : public InternetService {
   CollectionModel *artists_collection_model_;
   CollectionModel *albums_collection_model_;
   CollectionModel *songs_collection_model_;
-
-  CollectionFilter *artists_collection_filter_model_;
-  CollectionFilter *albums_collection_filter_model_;
-  CollectionFilter *songs_collection_filter_model_;
 
   QTimer *timer_search_delay_;
   QTimer *timer_login_attempt_;

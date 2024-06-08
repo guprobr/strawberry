@@ -56,14 +56,9 @@ class CollectionModelTest : public ::testing::Test {
     backend_ = make_shared<CollectionBackend>();
     backend_->Init(database_, nullptr, Song::Source::Collection, QLatin1String(SCollection::kSongsTable), QLatin1String(SCollection::kDirsTable), QLatin1String(SCollection::kSubdirsTable));
     model_ = make_unique<CollectionModel>(backend_, nullptr);
+    collection_filter_ = model_->filter();
 
     added_dir_ = false;
-
-    collection_filter_ = make_unique<CollectionFilter>();
-    collection_filter_->setSourceModel(&*model_);
-    collection_filter_->setSortRole(CollectionModel::Role_SortText);
-    collection_filter_->setDynamicSortFilter(true);
-    collection_filter_->sort(0);
 
   }
 
@@ -98,7 +93,7 @@ class CollectionModelTest : public ::testing::Test {
   SharedPtr<Database> database_;  // NOLINT(cppcoreguidelines-non-private-member-variables-in-classes)
   SharedPtr<CollectionBackend> backend_;  // NOLINT(cppcoreguidelines-non-private-member-variables-in-classes)
   ScopedPtr<CollectionModel> model_;  // NOLINT(cppcoreguidelines-non-private-member-variables-in-classes)
-  ScopedPtr<CollectionFilter> collection_filter_;  // NOLINT(cppcoreguidelines-non-private-member-variables-in-classes)
+  CollectionFilter *collection_filter_;  // NOLINT(cppcoreguidelines-non-private-member-variables-in-classes)
 
   bool added_dir_;  // NOLINT(cppcoreguidelines-non-private-member-variables-in-classes)
 };
@@ -153,8 +148,6 @@ TEST_F(CollectionModelTest, NumericHeaders) {
   AddSong(QStringLiteral("Title"), QStringLiteral("2artist"), QStringLiteral("Album"), 123);
   AddSong(QStringLiteral("Title"), QStringLiteral("0artist"), QStringLiteral("Album"), 123);
   AddSong(QStringLiteral("Title"), QStringLiteral("zartist"), QStringLiteral("Album"), 123);
-
-  collection_filter_->setDynamicSortFilter(true);
 
   ASSERT_EQ(6, collection_filter_->rowCount(QModelIndex()));
   EXPECT_EQ(QStringLiteral("0-9"), collection_filter_->index(0, 0, QModelIndex()).data().toString());

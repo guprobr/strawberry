@@ -60,6 +60,7 @@ class Settings;
 class Application;
 class CollectionBackend;
 class CollectionDirectoryModel;
+class CollectionFilter;
 
 class CollectionModel : public SimpleTreeModel<CollectionItem> {
   Q_OBJECT
@@ -123,6 +124,8 @@ class CollectionModel : public SimpleTreeModel<CollectionItem> {
     }
     bool operator!=(const Grouping other) const { return !(*this == other); }
   };
+
+  CollectionFilter *filter() const { return filter_; }
 
   void Init();
   void Reset();
@@ -244,6 +247,9 @@ class CollectionModel : public SimpleTreeModel<CollectionItem> {
 
   static void ClearDiskCache();
 
+  void ScheduleSort();
+  void DoSort();
+
   void RowsInserted(const QModelIndex &parent, const int first, const int last);
   void RowsRemoved(const QModelIndex &parent, const int first, const int last);
 
@@ -252,8 +258,10 @@ class CollectionModel : public SimpleTreeModel<CollectionItem> {
   SharedPtr<CollectionBackend> backend_;
   Application *app_;
   CollectionDirectoryModel *dir_model_;
+  CollectionFilter *filter_;
   QTimer *timer_reload_;
   QTimer *timer_update_;
+  QTimer *timer_sort_;
 
   QPixmap pixmap_no_cover_;
   QIcon icon_artist_;

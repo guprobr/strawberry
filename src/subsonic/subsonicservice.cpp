@@ -77,7 +77,6 @@ SubsonicService::SubsonicService(Application *app, QObject *parent)
       url_handler_(new SubsonicUrlHandler(app, this)),
       collection_backend_(nullptr),
       collection_model_(nullptr),
-      collection_filter_model_(new CollectionFilter(this)),
       http2_(false),
       verify_certificate_(false),
       download_album_covers_(true),
@@ -86,21 +85,10 @@ SubsonicService::SubsonicService(Application *app, QObject *parent)
 
   app->player()->RegisterUrlHandler(url_handler_);
 
-  // Backend
-
-
   collection_backend_ = make_shared<CollectionBackend>();
   collection_backend_->moveToThread(app_->database()->thread());
   collection_backend_->Init(app_->database(), app->task_manager(), Song::Source::Subsonic, QLatin1String(kSongsTable));
-
-  // Model
-
   collection_model_ = new CollectionModel(collection_backend_, app_, this);
-  collection_filter_model_->setSourceModel(collection_model_);
-  collection_filter_model_->setSortRole(CollectionModel::Role_SortText);
-  collection_filter_model_->setDynamicSortFilter(true);
-  collection_filter_model_->setSortLocaleAware(true);
-  collection_filter_model_->sort(0);
 
   SubsonicService::ReloadSettings();
 

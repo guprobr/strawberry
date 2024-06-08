@@ -78,11 +78,11 @@ class SubsonicService : public InternetService {
 
   SharedPtr<CollectionBackend> collection_backend() const { return collection_backend_; }
   CollectionModel *collection_model() const { return collection_model_; }
-  CollectionFilter *collection_filter_model() const { return collection_filter_model_; }
+  CollectionFilter *collection_filter_model() const { return collection_model_->filter(); }
 
   SharedPtr<CollectionBackend> songs_collection_backend() override { return collection_backend_; }
   CollectionModel *songs_collection_model() override { return collection_model_; }
-  CollectionFilter *songs_collection_filter_model() override { return collection_filter_model_; }
+  CollectionFilter *songs_collection_filter_model() override { return collection_model_->filter(); }
 
   void CheckConfiguration();
   void Scrobble(const QString &song_id, const bool submission, const QDateTime &time);
@@ -109,7 +109,6 @@ class SubsonicService : public InternetService {
 
   SharedPtr<CollectionBackend> collection_backend_;
   CollectionModel *collection_model_;
-  CollectionFilter *collection_filter_model_;
 
   SharedPtr<SubsonicRequest> songs_request_;
   SharedPtr<SubsonicScrobbleRequest> scrobble_request_;

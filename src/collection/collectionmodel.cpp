@@ -68,6 +68,7 @@
 #include "collectionitem.h"
 #include "collectionmodel.h"
 #include "collectionmodelupdate.h"
+#include "collectionfilter.h"
 #include "playlist/playlistmanager.h"
 #include "playlist/songmimedata.h"
 #include "covermanager/albumcoverloaderoptions.h"
@@ -88,8 +89,10 @@ CollectionModel::CollectionModel(SharedPtr<CollectionBackend> backend, Applicati
       backend_(backend),
       app_(app),
       dir_model_(new CollectionDirectoryModel(backend, this)),
+      filter_(new CollectionFilter(this)),
       timer_reload_(new QTimer(this)),
       timer_update_(new QTimer(this)),
+      timer_sort_(new QTimer(this)),
       icon_artist_(IconLoader::Load(QStringLiteral("folder-sound"))),
       show_dividers_(true),
       show_pretty_covers_(true),
@@ -101,6 +104,12 @@ CollectionModel::CollectionModel(SharedPtr<CollectionBackend> backend, Applicati
       total_artist_count_(0),
       total_album_count_(0),
       init_task_id_(-1) {
+
+  filter_->setSourceModel(this);
+  filter_->setSortRole(Role_SortText);
+  filter_->setDynamicSortFilter(true);
+  filter_->setSortLocaleAware(true);
+  filter_->sort(0);
 
   group_by_[0] = GroupBy::AlbumArtist;
   group_by_[1] = GroupBy::AlbumDisc;
@@ -132,6 +141,9 @@ CollectionModel::CollectionModel(SharedPtr<CollectionBackend> backend, Applicati
   QObject::connect(&*backend_, &CollectionBackend::SongsStatisticsChanged, this, &CollectionModel::AddReAddOrUpdate);
   QObject::connect(&*backend_, &CollectionBackend::SongsRatingChanged, this, &CollectionModel::AddReAddOrUpdate);
 
+  QObject::connect(this, &QAbstractItemModel::rowsInserted, this, &CollectionModel::ScheduleSort);
+  QObject::connect(this, &QAbstractItemModel::dataChanged, this, &CollectionModel::ScheduleSort);
+
   backend_->UpdateTotalSongCountAsync();
   backend_->UpdateTotalArtistCountAsync();
   backend_->UpdateTotalAlbumCountAsync();
@@ -143,6 +155,10 @@ CollectionModel::CollectionModel(SharedPtr<CollectionBackend> backend, Applicati
   timer_update_->setSingleShot(false);
   timer_update_->setInterval(20);
   QObject::connect(timer_update_, &QTimer::timeout, this, &CollectionModel::ProcessUpdate);
+
+  timer_sort_->setSingleShot(true);
+  timer_sort_->setInterval(20);
+  QObject::connect(timer_sort_, &QTimer::timeout, this, &CollectionModel::DoSort);
 
   ReloadSettings();
 
@@ -1645,6 +1661,22 @@ void CollectionModel::ExpandAll(CollectionItem *item) const {
 
   for (CollectionItem *child : item->children) {
     ExpandAll(child);
+  }
+
+}
+
+void CollectionModel::ScheduleSort() {
+
+  if (filter_) {
+    timer_sort_->start();
+  }
+
+}
+
+void CollectionModel::DoSort() {
+
+  if (filter_) {
+    filter_->setDynamicSortFilter(true);
   }
 
 }

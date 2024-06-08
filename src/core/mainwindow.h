@@ -377,8 +377,6 @@ class MainWindow : public QMainWindow, public PlatformInterface {
 
   QModelIndex playlist_menu_index_;
 
-  CollectionFilter *collection_filter_;
-
   QTimer *track_position_timer_;
   QTimer *track_slider_timer_;
   Settings settings_;

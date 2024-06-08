@@ -99,9 +99,6 @@ TidalService::TidalService(Application *app, QObject *parent)
       artists_collection_model_(nullptr),
       albums_collection_model_(nullptr),
       songs_collection_model_(nullptr),
-      artists_collection_filter_model_(new CollectionFilter(this)),
-      albums_collection_filter_model_(new CollectionFilter(this)),
-      songs_collection_filter_model_(new CollectionFilter(this)),
       timer_search_delay_(new QTimer(this)),
       timer_login_attempt_(new QTimer(this)),
       timer_refresh_login_(new QTimer(this)),
@@ -142,27 +139,10 @@ TidalService::TidalService(Application *app, QObject *parent)
   songs_collection_backend_->moveToThread(app_->database()->thread());
   songs_collection_backend_->Init(app_->database(), app->task_manager(), Song::Source::Tidal, QLatin1String(kSongsTable));
 
+  // Models
   artists_collection_model_ = new CollectionModel(artists_collection_backend_, app_, this);
   albums_collection_model_ = new CollectionModel(albums_collection_backend_, app_, this);
   songs_collection_model_ = new CollectionModel(songs_collection_backend_, app_, this);
-
-  artists_collection_filter_model_->setSourceModel(artists_collection_model_);
-  artists_collection_filter_model_->setSortRole(CollectionModel::Role_SortText);
-  artists_collection_filter_model_->setDynamicSortFilter(true);
-  artists_collection_filter_model_->setSortLocaleAware(true);
-  artists_collection_filter_model_->sort(0);
-
-  albums_collection_filter_model_->setSourceModel(albums_collection_model_);
-  albums_collection_filter_model_->setSortRole(CollectionModel::Role_SortText);
-  albums_collection_filter_model_->setDynamicSortFilter(true);
-  albums_collection_filter_model_->setSortLocaleAware(true);
-  albums_collection_filter_model_->sort(0);
-
-  songs_collection_filter_model_->setSourceModel(songs_collection_model_);
-  songs_collection_filter_model_->setSortRole(CollectionModel::Role_SortText);
-  songs_collection_filter_model_->setDynamicSortFilter(true);
-  songs_collection_filter_model_->setSortLocaleAware(true);
-  songs_collection_filter_model_->sort(0);
 
   // Search
 
